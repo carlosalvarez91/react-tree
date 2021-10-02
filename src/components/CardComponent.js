@@ -26,7 +26,7 @@ export default function CardComponent(props){
                     <div key={i}>
                         <h1>{e.key}</h1>
                         {content.map((c,j)=>{
-                            return <p key={e.content}>{c.label}: {c.content}</p>
+                            return <p key={e.content+j}>{c.label}: {c.content}</p>
                         })}
                     </div>
                     )
