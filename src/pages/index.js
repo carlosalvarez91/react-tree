@@ -1,22 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { getCompanies, getEmployeesByCompany, getAllEmployees, getCompanyAddress, getCompanyProjects, getEmployeeDetails, getAllProjects } from '../services/global';
-import { Tree, Col, Row } from 'antd';
+import { Col, Row } from 'antd';
 import CardComponent from '../components/CardComponent';
 import { CardInfoContext } from '../context/CardInfoContext';
-
-function updateTreeData(list, key, children) {
-  return list.map((node) => {
-    if (node.key === key) {
-      return { ...node, children };
-    }
-
-    if (node.children) {
-      return { ...node, children: updateTreeData(node.children, key, children) };
-    }
-
-    return node;
-  });
-}
+import {CaretDownOutlined, CaretRightOutlined} from '@ant-design/icons'
 
 
 export default function Home() {
@@ -48,10 +35,14 @@ export default function Home() {
     */
 
     getEmployeeDetails(key).then(data=>{
-      payload.cardTitle = `${data.firstName} ${data.lastName}`
+      payload.cardTitle = `Employee`
       payload.contentGroups.group_1 ={
         key: 'Employee Details',
         content: [
+          {
+            label: 'Employee Name',
+            content: `${data.firstName} ${data.lastName}`
+          },
           {
             label: 'Job title',
             content: data.jobTitle
@@ -69,52 +60,48 @@ export default function Home() {
       setCardInfo(payload)
     })
   }
-  
-  const handleClickJobArea = (e)=>{
-    setSelectedJobArea(e.key)
-    setEmployees(e.employees)
 
-    console.log(e)
-
+  const handleClickJobArea = (jobArea, company)=>{
+    setSelectedJobArea(jobArea.key)
+    setEmployees(jobArea.employees)
     /*
     Clicking on Employee's job area should only display 
     how many employees work in that area, 
     and the number of projects they participate in.
     */
-    console.log('employeesGroupedByJobArea', employeesGroupedByJobArea)
-    let totalEmployees = e.employees.length
-    getAllProjects().then(data=>{
-      console.log(data)
-      // data.filter(e=>{
-      //   return e.companyId === "3c26ed77-821c-4fc8-91d3-034ccfdc2179" 
-      // })
+    let totalEmployees = jobArea.employees.length
+    getCompanyProjects(company.id).then(data=>{
+      payload.cardTitle = 'Job Area'
+      payload.contentGroups.group_1 ={
+        key: 'Job Area info',
+        content: [
+          {
+            label: 'Job Area ',
+            content: jobArea.title
+          },
+          {
+            label: 'Total employees',
+            content: totalEmployees
+          },
+          {
+            label: 'Number of projects',
+            content: data.length
+          }
+        ]
+      }
+      setCardInfo(payload)
     })
-    payload.cardTitle = e.title
-    payload.contentGroups.group_1 ={
-      key: 'Job Area info',
-      content: [
-        {
-          label: 'Total employees',
-          content: totalEmployees
-        },
-     
-        {
-          label: 'Number of projects',
-          content:5
-        }
-      ]
-    }
-
-    setCardInfo(payload)
-  
   }
 
   const handleClickCompany =(c)=>{
     setSelectedCompany(c.id)
     getEmployeesByCompany(c.id).then(data=>{
-      let jobAreas = data.map((e,i)=>{
-        return {title:e.jobArea, key:`${c.id}-${e.jobArea}`, type:'jobArea'}
-      })
+ 
+      const jobAreas = [...new Map(data.map(item =>
+        [item['jobArea'], item])).values()].map(e=>{
+          return {title:e.jobArea, key:`${c.id}-${e.jobArea}`, type:'jobArea'}
+        });
+
       getAllEmployees().then(allEmployeesResponse=>{
 
         let jobAreasWithEmployees = jobAreas.map(j=>{
@@ -135,17 +122,24 @@ export default function Home() {
       })
     })
 
-
-
     /*
-    When the user clicks on a company, the app should display the company's address and the company's projects. It should be possible to visualize the information about each project. If you feel that this is too easy, add the ability to edit project details (changing the project name) and assigning & removing employees from a project.    
+    When the user clicks on a company, 
+    the app should display the company's address and the company's projects. 
+    It should be possible to visualize the information about each project. 
+    If you feel that this is too easy, 
+    add the ability to edit project details (changing the project name)
+    and assigning & removing employees from a project.    
     */
 
-      payload.cardTitle = c.name
+      payload.cardTitle = 'Company'
       getCompanyAddress(c.id).then(data=>{
           payload.contentGroups.group_1 = {
             key: 'Company info',
             content: [
+              {
+                label: 'Name',
+                content: c.name
+              },
               {
                 label: 'Address',
                 content: `${data.street} ${data.city}, ${data.state} ${data.state}`
@@ -174,11 +168,11 @@ export default function Home() {
       {companies.map(e=>{
         return <div key={e.id}><p onClick={()=>{
             handleClickCompany(e)
-        }}>{e.name}</p>
+        }}> {selectedCompany === e.id ? <CaretDownOutlined/>: <CaretRightOutlined />} {e.name}</p>
         {
           selectedCompany === e.id && employeesGroupedByJobArea && employeesGroupedByJobArea.map((j,i)=>{
             return <div key={i} style={{marginLeft:20}}>
-                    <p onClick={()=>handleClickJobArea(j)}>{j.title}</p>
+                    <p onClick={()=>handleClickJobArea(j,e)}>{selectedJobArea === j.key ? <CaretDownOutlined/>: <CaretRightOutlined />}{j.title}</p>
                     {selectedJobArea === j.key && employees && employees.map((e,x)=>{
                     return <p style={{marginLeft:20}}key={x} onClick={()=>{
                       handleClickOnEmployee(e.key)
