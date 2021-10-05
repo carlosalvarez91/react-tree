@@ -151,7 +151,12 @@ export default function Home() {
           payload.contentGroups.group_2 = {
             key: 'Company projects',
             content: data.map(e=>{
-              return {label: 'Project', content: e.name}
+              return {
+                label: 'Project',
+                content: e.name,
+                id: e.id,
+                department: e.department
+              }
             })
           }
 

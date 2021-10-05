@@ -6,13 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import { CardInfoProvider } from './context/CardInfoContext';
 
 ReactDOM.render(
-  <React.StrictMode>
+  
     <Router>
       <CardInfoProvider>
         <App />
       </CardInfoProvider>
     </Router>
-  </React.StrictMode>,
+  ,
   document.getElementById('root')
 );
 
