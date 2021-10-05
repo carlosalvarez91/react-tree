@@ -44,27 +44,15 @@ export const getAllProjects = async (id)=>{
 }
 
 export const putProject = async (project) =>{
-      console.log('................',project)
-          /*
-            {
-            projectID: "8faa447c-3cf5-49c7-92a9-14c2c0a453eb",
-            projectName: "Handcrafted Frozen Shoes",
-            employees: [
-              "73591378-6602-4338-a110-b9ad8b032e27"
-              "c7fff585-2f9b-4164-94f0-6552dbeeeb04"
-              "26e44cf2-cf3c-4ac9-b331-c87c9dfd07cf"
-            ]
-          }
-          */
       const body = {
             projectID: project.id,
             projectName: project.content,
             employees: []
       }
-      console.log('................',body)
-      const resp = await fetch(`${API}/api/projects/update_project/`, {
+      const resp = await fetch(`${API}/api/projects/update_project`, {
             method: 'PUT',
-            body
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body) 
         }),
         data = await resp.json();
       return data;

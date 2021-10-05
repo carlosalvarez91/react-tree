@@ -148,6 +148,7 @@ export default function Home() {
           }
         })
         getCompanyProjects(c.id).then(data=>{
+          console.log('getCompanyProjects....', data)
           payload.contentGroups.group_2 = {
             key: 'Company projects',
             content: data.map(e=>{
@@ -155,6 +156,7 @@ export default function Home() {
                 label: 'Project',
                 content: e.name,
                 id: e.id,
+                _id:e._id,
                 department: e.department
               }
             })

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { Modal, Button, Input } from 'antd';
 import { CardInfoContext } from '../context/CardInfoContext';
 import { putProject } from '../services/global';
@@ -11,16 +11,20 @@ export default function ModalComponent(props){
 
     const handleSubmit = () =>{
         putProject(newProject).then(data=>{
-          console.log(data)
+          console.log('putProject Response ',data)
         }).catch(error=>{
           console.log(error)
         })
     }
-    if (!project){
-      return null
-    }
+
+    useEffect(() => {
+
+      setNewProject(props.project)
+      
+    }, [props])
 
 
+    if (!project) return null
     return  <Modal
             title="Edit Project"
             visible={props.isModalVisible}
