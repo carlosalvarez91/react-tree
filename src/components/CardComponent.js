@@ -35,10 +35,10 @@ export default function CardComponent(props){
                     )
                 })}
             </Card>
-            <ModalComponent
+            {project && isModalVisible && <ModalComponent
             isModalVisible={isModalVisible}
             handleCancel={handleCancel}
             project={project}
-            />
+            />}
             </React.Fragment>
 }
