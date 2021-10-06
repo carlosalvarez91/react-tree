@@ -1,16 +1,17 @@
 import { useEffect, useState, useContext } from 'react';
-import { getCompanies, getEmployeesByCompany, getAllEmployees, getCompanyAddress, getCompanyProjects, getEmployeeDetails, getAllProjects } from '../services/global';
+import { getCompanies, getEmployeesByCompany, getAllEmployees, getCompanyAddress, getCompanyProjects, getEmployeeDetails } from '../services/global';
 import { Col, Row } from 'antd';
 import CardComponent from '../components/CardComponent';
 import { CardInfoContext } from '../context/CardInfoContext';
 import {CaretDownOutlined, CaretRightOutlined} from '@ant-design/icons'
+import { CompanyContext } from '../context/CompanyContext';
 
 
 export default function Home() {
   const [employeesGroupedByJobArea, setEmployeesGroupedByJobArea] = useState(null)
   const {setCardInfo} = useContext(CardInfoContext)
   const [companies, setCompanies] = useState([])
-  const [selectedCompany, setSelectedCompany] = useState(null)
+  const {selectedCompany, setSelectedCompany} = useContext(CompanyContext)
   const [employees, setEmployees] = useState([])
   const [selectedJobArea, setSelectedJobArea] = useState(null)
 
@@ -148,7 +149,6 @@ export default function Home() {
           }
         })
         getCompanyProjects(c.id).then(data=>{
-          console.log('getCompanyProjects....', data)
           payload.contentGroups.group_2 = {
             key: 'Company projects',
             content: data.map(e=>{
@@ -156,7 +156,6 @@ export default function Home() {
                 label: 'Project',
                 content: e.name,
                 id: e.id,
-                _id:e._id,
                 department: e.department
               }
             })

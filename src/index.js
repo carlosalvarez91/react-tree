@@ -4,12 +4,15 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CardInfoProvider } from './context/CardInfoContext';
+import { CompanyProvider } from './context/CompanyContext';
 
 ReactDOM.render(
   
     <Router>
       <CardInfoProvider>
+        <CompanyProvider>
         <App />
+        </CompanyProvider>
       </CardInfoProvider>
     </Router>
   ,
