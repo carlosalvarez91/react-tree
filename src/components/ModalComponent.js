@@ -15,25 +15,19 @@ export default function ModalComponent(props){
   const [defaultValueSelect, setDefaultValueSelect] = useState([])
 
     const handleSubmit = () =>{
-      console.log(newProject)
         putProject(newProject).then(data=>{
-          console.log('putProject Response ',data)
           props.handleCancel()
         }).catch(error=>{
-          console.log(error)
+          console.error(error)
         })
     }
 
     const init = async ()=>{
-      console.log(props.project.id)
       const responseGetEmployeesByCompany = await getEmployeesByCompany(selectedCompany)
       setAvailableEmployees(responseGetEmployeesByCompany)
-
       const responseGetCompanyProjects = await getCompanyProjects(selectedCompany)
-
       if (responseGetCompanyProjects.length > 0){
         let p = responseGetCompanyProjects.find(p=>p.id === props.project.id)
-        console.log('p.....', p)
         let newP = props.project
         newP.employeesId = p ? p.employeesId : []
         setNewProject(newP)
@@ -53,8 +47,6 @@ export default function ModalComponent(props){
     }
 
     const cleanup =()=>{
-      console.log('cleanup')
-
       setNewProject(null)
       setAvailableEmployees([])
       setCurrentEmployees([])
@@ -83,20 +75,12 @@ export default function ModalComponent(props){
 
     function handleOnDeselect(x){
       let selected = availableEmployees.find(e=>e.id===x) || currentEmployees.find(e=>e.firstName === x)
-      console.log('selected...', selected)
       if (selected){
-        let employees = newProject.employeesId.filter(e=>{
-         return e !== selected.id
-        })
+        let employees = newProject.employeesId.filter(e=>e !== selected.id)
         setDefaultValueSelect(defaultValueSelect.filter(e=>e !==selected.firstName))
         setNewProject({...newProject, employeesId:employees})
       }
     }
-
-    console.log('currentEmployees...', currentEmployees)
-
-    console.log('newProject...', newProject)
-
 
     if (!project) return null
     return  <Modal

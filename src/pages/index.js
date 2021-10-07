@@ -118,7 +118,6 @@ export default function Home() {
           })
           return j
         })
-        console.log(jobAreasWithEmployees)
         setEmployeesGroupedByJobArea(jobAreasWithEmployees)
       })
     })
@@ -170,7 +169,7 @@ export default function Home() {
   return (
     <Row>
       <Col span={6} style={{padding:'4rem'}}>
-
+      {/* this could be moved into <TreeComponent/>S */}
       {companies.map(e=>{
         return <div key={e.id}><p onClick={()=>{
             handleClickCompany(e)
@@ -193,10 +192,8 @@ export default function Home() {
 
 
       </Col>
-      <Col span={18}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', padding:'4rem' }}>
+      <Col span={18} style={{ display: 'flex', flexWrap: 'wrap', padding:'4rem' }}>
           <CardComponent/>
-      </div>
       </Col>
     </Row>
   )
